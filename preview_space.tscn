@@ -1,0 +1,68 @@
+[gd_scene load_steps=10 format=3 uid="uid://lwnntkgxeb28"]
+
+[ext_resource type="Texture2D" uid="uid://vmgc6gvl7bau" path="res://icon.svg" id="1_bdkws"]
+[ext_resource type="Script" path="res://State.gd" id="1_wgxhm"]
+[ext_resource type="Script" path="res://file_dialog.gd" id="2_3cni8"]
+[ext_resource type="Script" path="res://mesh_instance.gd" id="3_wojqg"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ovr3w"]
+sky_top_color = Color(0, 0, 0, 1)
+sky_horizon_color = Color(0.5, 0.5, 0.5, 1)
+ground_bottom_color = Color(0, 0, 0, 1)
+ground_horizon_color = Color(0.5, 0.5, 0.5, 1)
+
+[sub_resource type="Sky" id="Sky_a6tyj"]
+sky_material = SubResource("ProceduralSkyMaterial_ovr3w")
+
+[sub_resource type="Environment" id="Environment_j8o81"]
+background_mode = 1
+sky = SubResource("Sky_a6tyj")
+tonemap_mode = 2
+ssao_enabled = true
+glow_enabled = true
+
+[sub_resource type="QuadMesh" id="QuadMesh_teebk"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ph74n"]
+resource_local_to_scene = true
+transparency = 1
+albedo_texture = ExtResource("1_bdkws")
+normal_enabled = true
+texture_filter = 0
+
+[node name="PreviewSpace" type="Node3D"]
+script = ExtResource("1_wgxhm")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_j8o81")
+
+[node name="MeshInstance" type="MeshInstance3D" parent="."]
+mesh = SubResource("QuadMesh_teebk")
+surface_material_override/0 = SubResource("StandardMaterial3D_ph74n")
+script = ExtResource("3_wojqg")
+
+[node name="FileDialog" type="FileDialog" parent="."]
+mode = 2
+title = "Open a Directory"
+initial_position = 5
+size = Vector2i(800, 600)
+ok_button_text = "Select Current Folder"
+file_mode = 2
+access = 2
+filters = PackedStringArray("*.bmp,*.png,*.jpeg;Images")
+script = ExtResource("2_3cni8")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.47598)
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.282298, -0.728978, 0.238118)
+light_color = Color(0, 0.804097, 0.804728, 1)
+omni_range = 4.62728
+
+[node name="OmniLight3D2" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.712391, 0.710432, 0.262087)
+light_color = Color(1, 0.172549, 0.117647, 1)
+light_energy = 5.696
+
+[connection signal="dir_selected" from="FileDialog" to="." method="_on_file_dialog_dir_selected"]
